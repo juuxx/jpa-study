@@ -31,9 +31,9 @@ public class Main {
     private static void logic(EntityManager em){
 
         Member member = new Member();
-        member.setId(3L);
+
         member.setUsername("C");
-        member.setRoleType(RoleType.GUEST);
+
 
         em.persist(member); //db에 저장
     }

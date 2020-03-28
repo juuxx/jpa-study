@@ -14,34 +14,24 @@ import java.util.Date;
 @lombok.Getter
 
 @Entity
-@Table(name="MEMBER")
+@TableGenerator(name="MEMBER_SQE_GENERATOR",
+                table="MY_SEQUNECE", //테이블 매핑 전략
+                pkColumnValue = "MEMBER_SEQ", allocationSize = 1)
 public class Member {
-
+/*
+* 권장하는 식별자 전략
+* 기본키 제약 조건 : null 아님, 유일, 변하면 안된다.
+* 미래까지 이 조건을 만족하는 자연키는 찾기 어렵다. 대리키(대체키)를 사용하자.
+* 예를 들어 주민등록번호도 기본 키로 적절하지 않다.
+* 권장 : LONG 형 + 대체키 + 키 생성전략 사용
+*/
     @Id
+    @GeneratedValue(strategy = GenerationType.TABLE
+                  , generator = "MEMBER_SQE_GENERATOR")
     private Long id;
 
     @Column(name = "NAME", nullable = false)
     private String username;
-
-    private Integer age;
-
-    @Enumerated(EnumType.STRING) //EnumType.ORDINAL 사용 x
-    //Enum 안의 index 값을 db에 넣는데, 만약에 USER, ADMIN 이였다가 GUEST, USER, ADMIN으로 바뀌면
-    //구 데이터는 USER값이 0 신데이터는 GUEST값이 0으로 바뀌어서 데이터가 꼬이게 됨
-    private RoleType roleType;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
-
-    @Lob //varchar를 넘어서는 큰 컨텐츠
-    private String description;
-
-    @Transient //db와 상관 없는 메모리에서만 사용
-    private int temp;
-
 
     public Member() {
     }
